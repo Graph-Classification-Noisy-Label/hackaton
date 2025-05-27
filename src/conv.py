@@ -9,18 +9,14 @@ import math
 ### GIN convolution along the graph structure
 class GINConv(MessagePassing):
     def __init__(self, emb_dim):
-        '''
-            emb_dim (int): node embedding dimensionality
-        '''
 
         super(GINConv, self).__init__(aggr = "add")
 
-        self.mlp = torch.nn.Sequential(torch.nn.Linear(emb_dim, emb_dim), 
-                                       # torch.nn.BatchNorm1d(2*emb_dim),
-                                       torch.nn.LeakyReLU(0.1),
-                                       # torch.nn.ReLU(), 
-                                       torch.nn.Linear(emb_dim, emb_dim))
-        self.eps = 0 #torch.nn.Parameter(torch.Tensor([0])) 
+        self.mlp = torch.nn.Sequential(torch.nn.Linear(emb_dim, 2*emb_dim), 
+                                       torch.nn.BatchNorm1d(2*emb_dim),
+                                       torch.nn.ReLU(), 
+                                       torch.nn.Linear(2*emb_dim, emb_dim))
+        self.eps = torch.nn.Parameter(torch.Tensor([0])) 
 
         self.edge_encoder = torch.nn.Linear(7, emb_dim)
 
